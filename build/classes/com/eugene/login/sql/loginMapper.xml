@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="test">
+    <select id="loginTc" resultType="String" parameterType="String">
+        SELECT tc_pw 
+        FROM tc
+        WHERE tc_mail=#{tc_mail};
+    </select>   
+    
+    <select id="findName" resultType="String" parameterType="String">
+        SELECT tc_name
+        FROM tc
+        WHERE tc_mail=#{tc_mail};
+    </select>
+    
+    <select id="selectAllTc" resultType="String">
+        SELECT tc_name
+        FROM tc;
+    </select>
+    
+    <select id="findID" resultType="String" parameterType="LoginItem">
+       SELECT tc_mail
+       FROM tc
+       WHERE tc_name=#{loginName} AND tc_phone=#{loginPhone} AND tc_date=#{loginDate};
+    </select>
+    
+    <select id="findPW" parameterType="LoginItem" resultType="String">
+       SELECT tc_pw
+       FROM tc
+       WHERE tc_mail=#{loginMail} AND tc_name=#{loginName} AND tc_phone=#{loginPhone} AND tc_date=#{loginDate};
+    </select>
+    
+    <select id="selectTc" parameterType="String" resultType="LoginItem">
+        SELECT tc_name as loginName,
+               tc_mail as loginMail,
+               tc_pw as loginPW,
+               tc_date as loginDate,
+               tc_gender as loginGender,
+               tc_phone as loginPhone,
+               tc_memo as loginMemo
+         FROM  tc 
+        WHERE tc_mail = #{tc_mail};
+    </select>
+    
+    <insert id="insertUser" parameterType="LoginItem">
+        INSERT INTO tc(tc_name, tc_date, tc_gender, tc_phone, tc_pw, tc_mail)
+        VALUES (#{loginName}, #{loginDate}, #{loginGender}, #{loginPhone}, #{loginPw}, #{loginMail});
+    </insert>
+    
+    <update id="updateLogin" parameterType="LoginItem">
+        UPDATE tc SET
+            tc_name=#{loginName},
+            tc_date=#{loginDate},
+            tc_phone=#{loginPhone},
+            tc_memo=#{loginMemo},
+            tc_pw=#{loginPw}
+        WHERE tc_mail=#{loginMail};
+    </update>
+    
+    <select id="isSu" parameterType="String" resultType="Integer">
+        SELECT tc_issuper FROM tc WHERE tc_mail=#{id};
+    </select>
+    
+    <update id="updateTc" parameterType="LoginItem">
+        UPDATE tc SET
+        tc_pw=#{tc_pw},
+        tc_mail=#{tc_mail}
+        WHERE tc_name=#{tc_name};
+    </update>
+    
+    <update id="updatePw" parameterType="LoginItem">
+        UPDATE tc SET
+        tc_pw=#{tc_pw}    
+        WHERE tc_name=#{tc_name};
+    </update>
+    
+    <delete id="deleteTc" parameterType="String">
+        DELETE FROM tc
+        WHERE tc_name=#{tc_name};
+    </delete>
+    
+    <select id="selectAllMail" resultType="String">
+        SELECT tc_mail
+        FROM tc;
+    </select>
+    
+</mapper>

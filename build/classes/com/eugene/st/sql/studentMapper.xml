@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+ <!-- myBatis를 통해 DB를 다룰때 사용할 파일이다. 실행하고자 할 쿼리 모음 -->
+
+<mapper namespace="StudentInfor">
+    <select id="retrieveStudentList" resultType="StudentItem">
+        SELECT st_feeChangeDate stFeeChange, st_fee stFee, st_name stName, st_school stSchool, st_id stId, st_phone stPhone, st_enroll stEnroll
+        FROM st
+        WHERE st_out is null;
+    </select>
+    
+    <select id="PartialRetrieveStudentList" parameterType="string" resultType="StudentItem">
+        SELECT st_name as stName, st_school as stSchool, st_id as stId, st_phone as stPhone
+        FROM st
+        WHERE st_name LIKE CONCAT('%', #{stName}, '%'); 
+    </select>
+    
+    <select id="maxStId" resultType="Integer">
+        SELECT MAX(st_id) FROM st;
+    </select>
+    
+    <select id="retrieveStudent" parameterType="StudentItem" resultType="StudentItem">
+        SELECT st_id stId, st_name stName, st_school stSchool, st_phone stPhone, st_parents stParents,
+        st_date stDate, st_gender stGender, st_address stAddress, st_memo stMemo, st_enroll stEnroll, st_fee stFee, tc_id tcId, st_feeChangeDate stFeeChange
+        FROM st
+        WHERE st_id = #{stId}
+    </select>
+    
+    <insert id="insertStudent" parameterType="StudentItem">
+        INSERT INTO st(st_phone, st_name, st_school, st_parents, st_date, st_gender, st_address, st_memo, st_enroll, st_fee, tc_id)
+        VALUES (#{stPhone}, #{stName}, #{stSchool}, #{stParents}, #{stDate}, #{stGender}, #{stAddress}, #{stMemo}, #{stEnroll}, #{stFee}, #{tcId})
+    </insert>
+    
+    <update id="deleteStudent" parameterType="StudentItem">
+         UPDATE st SET st_out = #{stOut} where st_id = #{stId};
+    </update>
+    
+    <update id="updateStudent" parameterType="StudentItem">
+        UPDATE st SET st_name = #{stName},
+        st_phone=#{stPhone},
+        st_school = #{stSchool},
+        st_parents = #{stParents},
+        st_date = #{stDate},
+        st_gender = #{stGender},
+        st_address = #{stAddress},
+        st_memo = #{stMemo},
+        st_enroll = #{stEnroll},
+        st_fee = #{stFee},
+        tc_id = #{tcId},
+        st_feeChangeDate = #{stFeeChange}
+        WHERE st_id=#{stId}
+    </update>
+    
+    <select id="selectStudent" parameterType="String" resultType="String">
+        SELECT st_name
+        FROM st
+        WHERE st_id=#{stId};
+    </select>
+    
+    <select id="selectStudentSchool" parameterType="String" resultType="String">
+        SELECT st_school
+        FROM st
+        WHERE st_id=#{stId};
+    </select>
+    
+    
+</mapper>

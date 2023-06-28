@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- DB 접속정보 및 기타 설정등을 할 수 있는 설정파일 -->
+
+
+
+<!DOCTYPE configuration
+    PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+
+	<typeAliases>
+    	<typeAlias alias="StudentItem" type="com.eugene.st.item.StudentItem"/>
+    	<typeAlias alias="TeacherItem" type="com.eugene.tc.item.TeacherItem"/>
+    	<typeAlias alias="LoginItem" type="com.eugene.login.item.LoginItem"/>
+        <typeAlias alias="CrsItem" type="com.eugene.crs.item.CrsItem"/>
+        <typeAlias alias="StaItem" type="com.eugene.st_attend.item.StaItem"/>
+        <typeAlias alias="TcAttendItem" type="com.eugene.tc_attend.item.TcAttendItem"/>
+        <typeAlias alias="SignItem" type="com.eugene.sign.item.SignItem"/>
+        <typeAlias alias="StfItem" type="com.eugene.st_fee.item.StfItem"/>
+  	</typeAliases>
+
+    <environments default="development">
+        <environment id="development">
+            <transactionManager type="JDBC" />
+            <dataSource type="POOLED">
+                <property name="driver" value="org.mariadb.jdbc.Driver" />
+                <property name="url" value="jdbc:mariadb://127.0.0.1:3306/institute" />
+                <property name="username" value="root"/>
+                <property name="password" value="1234" />
+            </dataSource>
+        </environment>
+    </environments>
+
+    <mappers>
+        <mapper resource="com/eugene/tc/sql/teacherMapper.xml" />
+        <mapper resource="com/eugene/st/sql/studentMapper.xml" />
+        <mapper resource="com/eugene/login/sql/loginMapper.xml"/>
+        <mapper resource="com/eugene/crs/sql/crsMapper.xml"/>
+        <mapper resource="com/eugene/st_attend/sql/staMapper.xml"/>
+        <mapper resource="com/eugene/tc_attend/sql/tcAttendMapper.xml"/>
+        <mapper resource="com/eugene/sign/sql/signMapper.xml"/>
+        <mapper resource="com/eugene/st_fee/sql/stfMapper.xml"/>
+    </mappers>
+</configuration>

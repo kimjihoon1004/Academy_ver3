@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+ 
+
+ <!-- myBatis를 통해 DB를 다룰때 사용할 파일이다. 실행하고자 할 쿼리 모음 -->
+
+ <!-- member에서 student로 바꿈 -->
+
+<mapper namespace="Testt">
+   <select id="retrieveCheck" parameterType="TeacherItem" resultType="TeacherItem">
+        SELECT tc_name as tcName, 
+               tc_Id as tcId, 
+               tc_phone as tcPhone
+          FROM tc
+        <if test = "tcName != null or tcName == ''">
+         WHERE tc_name LIKE CONCAT('%', #{tcName}, '%')
+        </if>
+   </select>
+    
+   <select id="teacherInformation" parameterType="TeacherItem" resultType="TeacherItem">
+       SELECT tc_name as tcName,
+              tc_Id as tcId,
+              tc_date as tcDate,
+              tc_gender as tcGender,
+              tc_phone as tcPhone,
+              tc_memo as tcMemo,
+              tc_pw as tcPw
+         FROM tc
+         WHERE tc_Id = #{tcId}
+   </select>
+   
+    <delete id="teacherDelete" parameterType="TeacherItem">
+       DELETE     
+         FROM tc
+         WHERE tc_Id = #{tcId}
+   </delete>
+   <update id="teacherUpdate" parameterType="TeacherItem" >
+       UPDATE     
+         tc
+        SET
+         tc_name = #{tcName},
+         tc_Id = #{tcId}, 
+         tc_date = #{tcDate}, 
+         tc_gender = #{tcGender}, 
+         tc_phone = #{tcPhone}, 
+         tc_memo = #{tcMemo}, 
+         tc_pw = #{tcPw}   
+         WHERE tc_Id = #{tcId}
+   </update>
+   
+   <select id="retrieveTeacher" resultType="TeacherItem">
+        SELECT tc_name as tcName, tc_id as tcId, tc_mail as tcMail
+        FROM tc;
+   </select>
+  
+   
+</mapper>

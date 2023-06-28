@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="SignMap">
+    <select id="selectCrs" parameterType="SignItem" resultType="SignItem">
+        SELECT crs_id as crs_id, sign_monday as monday, sign_tuesday as tuesday, sign_wednesday as wednesday, sign_thursday as thursday, sign_friday as friday
+        FROM sign
+        WHERE st_id=#{st_id} and sign_out is null;
+    </select>
+    
+    <insert id="insertCrs" parameterType="SignItem">
+        INSERT INTO sign(st_id, tc_id, crs_id, sign_monday, sign_tuesday, sign_wednesday, sign_thursday, sign_friday, sign_in)
+        VALUES (#{st_id}, #{tc_id}, #{crs_id}, #{monday}, #{tuesday}, #{wednesday}, #{thursday}, #{friday}, #{sign_in});
+    </insert>
+    
+    <update id="sameCrsUpdate" parameterType="SignItem">
+        UPDATE sign SET 
+        tc_id = #{tc_id},
+        sign_monday = #{monday},
+        sign_tuesday = #{tuesday},
+        sign_wednesday = #{wednesday},
+        sign_thursday = #{thursday},
+        sign_friday = #{friday}
+        WHERE st_id = #{st_id} and crs_id = #{crs_id} and sign_out is null;
+    </update>
+    
+    <update id="signOutUpdate" parameterType="SignItem">
+        UPDATE sign set sign_out = #{sign_out}
+        WHERE st_id = #{st_id} and crs_id = #{crs_id} and sign_out is NULL;
+    </update>
+    
+</mapper>
