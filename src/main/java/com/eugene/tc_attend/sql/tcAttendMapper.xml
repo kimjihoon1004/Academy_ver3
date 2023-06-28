@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+ 
+
+ <!-- myBatis를 통해 DB를 다룰때 사용할 파일이다. 실행하고자 할 쿼리 모음 -->
+
+ 
+
+<mapper namespace="tcAttend">
+    <select id="retrieveAttendList" parameterType="String" resultType="TcAttendItem">
+        SELECT tc_attend_id tcAttendId, tc_name tcName, tc_attend_in tcAttendIn, tc_attend_out tcAttendOut, tc_attend_off tcAttendOff 
+        FROM institute.tc_attend 
+        INNER JOIN institute.tc 
+        ON tc_attend.tc_id = tc.tc_id
+        WHERE tc_name like CONCAT('%', #{name}, '%') 
+        ORDER BY tc_attend.tc_attend_id DESC
+    </select>
+    
+    <select id="retrieveAttend" parameterType="Integer" resultType="TcAttendItem">
+        SELECT tc_attend_id tcAttendId, tc_attend_in tcAttendIn, tc_attend_out tcAttendOut, tc_attend_off tcAttendOff 
+        FROM institute.tc_attend 
+        WHERE tc_attend_id = #{Id}
+    </select>
+    
+    <insert id="AttendIn" parameterType="TcAttendItem">
+        INSERT INTO tc_attend(tc_attend_in, tc_attend_out, tc_attend_off, tc_id)
+        VALUES(now(), #{tcAttendOut}, #{tcAttendOff}, #{atTcId})
+    </insert>
+    
+    <update id="AttendOut" parameterType="TcAttendItem">
+        UPDATE tc_attend SET tc_attend_out = now()
+        WHERE tc_attend_in = (SELECT MAX(tc_attend_in)
+                                FROM tc_attend
+                                WHERE tc_id = #{atTcId})
+    </update>
+    
+    <insert id="AttendOff" parameterType="TcAttendItem">
+        INSERT INTO tc_attend(tc_attend_in, tc_attend_out, tc_attend_off, tc_id)
+        VALUES(now(), #{tcAttendOut}, now(), #{atTcId})
+    </insert>
+    
+    <update id="AttendUpdate" parameterType="TcAttendItem">
+        UPDATE tc_attend
+        <trim prefix="set" suffixOverrides=","> 
+            <if test="!tcAttendIn.equals('null')">tc_attend_in = #{tcAttendIn},</if>
+            <if test="!tcAttendOut.equals('null')">tc_attend_out = #{tcAttendOut},</if>
+            <if test="!tcAttendOff.equals('null')">tc_attend_off = #{tcAttendOff},</if>
+        </trim>     
+        WHERE tc_attend_id = #{tcAttendId}
+    </update>
+    
+    <delete id="AttendDelete" parameterType="Integer">
+        DELETE FROM tc_attend
+        WHERE tc_attend_id = #{Id}
+    </delete>
+    
+</mapper>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="StfSql">
+    <select id="retrieveStFee" resultType="StfItem" parameterType="StfItem">
+        SELECT fee as fee, feeCheck as feeCheck, feeMemo as feeMemo, fee_id as feeId, feePrePay as feePrePay, feeCheck as feeCheck
+        FROM st_fee
+        WHERE st_id = #{stId} AND feeCheck LIKE CONCAT('%', #{feeCheck}, '%') OR st_id = #{stId} AND feePrePay LIKE CONCAT('%', #{feePrePay}, '%');
+    </select>
+    
+    <insert id="StFeeInsert" parameterType="StfItem">
+        INSERT INTO st_fee(st_id, fee, feeCheck, feeMemo)
+        VALUES (#{stId}, #{fee}, #{feeCheck}, #{feeMemo})
+    </insert>
+    
+    <update id="StFeeUpdate" parameterType="StfItem">
+        UPDATE st_fee SET fee = #{fee}, feeCheck = #{feeCheck}, feeMemo = #{feeMemo}
+        WHERE fee_id = #{feeId};
+    </update>
+    
+    <select id="sumFee" parameterType="StfItem" resultType="String">
+        SELECT SUM(fee) as fee
+        FROM st_fee
+        WHERE feeCheck LIKE CONCAT('%', #{feeCheck}, '%') AND feePrePay LiKE CONCAT('%', #{feeCheck}, '%') OR feeCheck LIKE CONCAT('%', #{feeCheck}, '%') AND feePrePay IS NULL;
+    </select>
+    
+    <delete id="StFeeDelete" parameterType="StfItem">
+        DELETE FROM st_fee WHERE fee_id = #{feeId};
+    </delete>
+    
+    <insert id="PrePay" parameterType="StfItem">
+        INSERT INTO st_fee(st_id, fee, feeCheck, feeMemo, feePrePay)
+        VALUES (#{stId}, #{fee}, #{feeCheck}, #{feeMemo}, #{feePrePay});
+    </insert>
+</mapper>

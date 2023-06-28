@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN" "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="StaSql">
+    <select id="checkAttend" resultType="StaItem" parameterType="String">
+        SELECT st_attend_in as staIn, st_id as staId 
+        FROM st_attend
+        WHERE st_attend_in LIKE CONCAT(#{date}, '%') AND st_attend_out IS NULL;
+    </select>
+
+    <insert id="studentAttend" parameterType="StaItem">
+        INSERT INTO st_attend(st_id, st_attend_in)
+        VALUES (#{staId}, #{staIn});
+    </insert>
+    
+    <insert id="studentAbsent" parameterType="StaItem">
+        INSERT INTO st_attend(st_id, st_attend_absent)
+        VALUES (#{staId}, #{staAbsent});
+    </insert>
+
+    <delete id="deleteAttend" parameterType="StaItem">
+        DELETE FROM st_attend WHERE st_id = #{staId} and st_attend_in = #{staIn};
+    </delete>
+    
+    <delete id="deleteAbsent" parameterType="StaItem">
+        DELETE FROM st_attend WHERE st_id = #{staId} and st_attend_absent = #{staAbsent};
+    </delete>
+    
+    <update id="studentGoHome" parameterType="StaItem">
+        UPDATE st_attend SET 
+        st_attend_out = #{staOut}
+        WHERE st_attend_in = #{staIn} and st_id = #{staId};
+    </update>
+    
+    <update id="updateIn" parameterType="StaItem">
+        UPDATE st_attend SET
+        st_attend_in = #{staIn}
+        WHERE st_id = #{staId} and st_attend_id = #{staAttendId};
+    </update>
+    
+    <select id="selectAttendId" parameterType="StaItem" resultType="String">
+        SELECT st_attend_id 
+        FROM st_attend
+        WHERE st_attend_in = #{staIn} and st_id = #{staId};
+    </select>
+    
+    <select id="retrieveAttend" parameterType="String" resultType="StaItem">
+        select st_attend_in as staIn, st_id as staId, st_attend_out as staOut,
+        st_attend_absent as staAbsent, st_attend_id as staAttendId, st_attend_memo as staMemo
+        from st_attend
+        where st_attend_in like concat(#{date}, '%')
+        order by st_attend_in asc;
+    </select>
+
+    <select id="retrieveDate" parameterType="StaItem" resultType="StaItem">
+        SELECT st_attend_in as staIn, st_id  as staId, st_attend_out as staOut,
+        st_attend_absent as staAbsent
+        FROM st_attend
+        WHERE st_attend_in LIKE CONCAT(#{staIn}, '%');
+    </select>
+    
+    <select id="retrieve" parameterType="StaItem" resultType="StaItem">
+        SELECT st_attend_in as staIn, st_id  as staId, st_attend_out as staOut,
+        st_attend_absent as staAbsent
+        FROM st_attend
+        WHERE st_attend_in = #{staIn} and st_id = #{staId};
+    </select>
+
+    <select id="retrieveAbsent" resultType="StaItem" parameterType="String">
+        SELECT st_id as staId, st_attend_id as staAttendId, st_attend_memo as staMemo
+        FROM st_attend
+        WHERE st_attend_absent = #{date}; 
+    </select>
+    
+    <select id="countAbsent" resultType="Integer" parameterType="Integer">
+        SELECT COUNT(*) FROM st_attend
+        WHERE st_attend_absent IS NOT NULL AND st_attend_in IS NULL AND st_id=#{staId}; 
+    </select>
+    
+    <select id="findAbsent" resultType="String" parameterType="String">
+        SELECT st_attend_absent FROM st_attend
+        WHERE st_id = #{staId} AND st_attend_in IS NULL
+        ORDER BY st_attend_absent ASC;
+    </select>
+    
+    <update id="supplement" parameterType="StaItem">
+        UPDATE st_attend SET
+        st_attend_in = #{staIn}
+        WHERE st_id = #{staId} and st_attend_absent = #{staAbsent};
+    </update>
+    
+    <update id="updateAttend" parameterType="StaItem">
+        UPDATE st_attend SET
+        st_attend_in = null,
+        st_attend_out = null
+        WHERE st_id = #{staId} and st_attend_in = #{staIn};
+    </update>    
+    
+    <update id="updateMemo" parameterType="StaItem">
+        UPDATE st_attend SET
+        st_attend_memo = #{staMemo}
+        WHERE st_id = #{staId} and st_attend_id = #{staAttendId};
+    </update>
+</mapper>

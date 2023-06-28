@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+ 
+
+ <!-- myBatis를 통해 DB를 다룰때 사용할 파일이다. 실행하고자 할 쿼리 모음 -->
+
+ 
+
+<mapper namespace="CrsInfor">
+
+    <select id="retrieveCrsList" resultType="CrsItem">
+        SELECT crs_id crsId, crs_name crsName, crs_memo crsMemo
+        FROM crs
+    </select>
+    
+    <select id="retrieveCrsName" resultType="CrsItem">
+        SELECT crs_name as crsName
+        FROM crs;
+    </select>
+    
+   <select id="retrieveCheck" parameterType="CrsItem" resultType="CrsItem">
+        SELECT crs_name as crsName 
+          FROM crs
+        <if test = "crsName != null or crsName == ''">
+         WHERE crs_name LIKE CONCAT('%', #{crsName}, '%')
+        </if>
+   </select>
+    
+    <select id="retrieveCrs" parameterType="int" resultType="CrsItem">
+        SELECT crs_id crsId, crs_name crsName, crs_memo crsMemo
+        FROM crs
+        WHERE crs_id = #{x}
+    </select>
+    
+    <insert id="insertCrs" parameterType="CrsItem">
+        INSERT INTO crs(crs_name, crs_memo)
+        VALUES (#{crsName}, #{crsMemo})
+    </insert>
+    
+    <delete id="deleteCrs" parameterType="CrsItem">
+         delete from crs where crs_id=#{crsId}
+    </delete>
+    
+    <update id="updateCrs" parameterType="CrsItem">
+        UPDATE crs SET crs_name = #{crsName},
+        crs_memo = #{crsMemo}
+        WHERE crs_id=#{crsId}
+    </update>
+    
+</mapper>
